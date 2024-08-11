@@ -1,0 +1,3 @@
+[submodule "libs/STM32CubeH7"]
+	path = libs/STM32CubeH7
+	url = git@github.com:suburbanmarine/STM32CubeH7.git
