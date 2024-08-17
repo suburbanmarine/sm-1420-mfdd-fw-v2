@@ -1,0 +1,6 @@
+[
+    {
+        "name": "CustomToolchain",
+        "toolchainFile": "Toolchain_STM32H753VIT.cmake"
+    }
+]
