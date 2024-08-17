@@ -59,6 +59,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ANALOG_GAIN_Pin GPIO_PIN_4
+#define ANALOG_GAIN_GPIO_Port GPIOA
+#define HEADPHONE_OUT_Pin GPIO_PIN_5
+#define HEADPHONE_OUT_GPIO_Port GPIOA
 #define LED_RED_Pin GPIO_PIN_11
 #define LED_RED_GPIO_Port GPIOE
 #define LED_BLUE_Pin GPIO_PIN_12

@@ -196,6 +196,74 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 }
 
 /**
+* @brief DAC MSP Initialization
+* This function configures the hardware resources used in this example
+* @param hdac: DAC handle pointer
+* @retval None
+*/
+void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  if(hdac->Instance==DAC1)
+  {
+  /* USER CODE BEGIN DAC1_MspInit 0 */
+
+  /* USER CODE END DAC1_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_DAC12_CLK_ENABLE();
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    /**DAC1 GPIO Configuration
+    PA4     ------> DAC1_OUT1
+    PA5     ------> DAC1_OUT2
+    */
+    GPIO_InitStruct.Pin = ANALOG_GAIN_Pin|HEADPHONE_OUT_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* DAC1 interrupt Init */
+    HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 15, 0);
+    HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+  /* USER CODE BEGIN DAC1_MspInit 1 */
+
+  /* USER CODE END DAC1_MspInit 1 */
+  }
+
+}
+
+/**
+* @brief DAC MSP De-Initialization
+* This function freeze the hardware resources used in this example
+* @param hdac: DAC handle pointer
+* @retval None
+*/
+void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
+{
+  if(hdac->Instance==DAC1)
+  {
+  /* USER CODE BEGIN DAC1_MspDeInit 0 */
+
+  /* USER CODE END DAC1_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_DAC12_CLK_DISABLE();
+
+    /**DAC1 GPIO Configuration
+    PA4     ------> DAC1_OUT1
+    PA5     ------> DAC1_OUT2
+    */
+    HAL_GPIO_DeInit(GPIOA, ANALOG_GAIN_Pin|HEADPHONE_OUT_Pin);
+
+    /* DAC1 interrupt DeInit */
+    HAL_NVIC_DisableIRQ(TIM6_DAC_IRQn);
+  /* USER CODE BEGIN DAC1_MspDeInit 1 */
+
+  /* USER CODE END DAC1_MspDeInit 1 */
+  }
+
+}
+
+/**
 * @brief SPI MSP Initialization
 * This function configures the hardware resources used in this example
 * @param hspi: SPI handle pointer
@@ -221,7 +289,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     PeriphClkInitStruct.PLL2.PLL2R = 2;
     PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
     PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-    PeriphClkInitStruct.PLL2.PLL2FRACN = 0.0;
+    PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
     PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL2;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
