@@ -3,8 +3,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(sm-1420-mfdd
 	VERSION 0.1.0
-	DESCRIPTION "Smart PDU"
-	LANGUAGES ASM C CXX
+	DESCRIPTION "Metal detector"
+	LANGUAGES ASM C
 )
 
 add_library(stm32cubemxh7
