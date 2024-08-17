@@ -48,7 +48,7 @@ PUBLIC
 
 target_include_directories(stm32cubemxh7
 PUBLIC
-	Core/Inc
+	cubemx_project/Core/Inc
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     libs/STM32CubeH7/Middlewares/Third_Party/FreeRTOS/Source/include
@@ -59,13 +59,13 @@ PUBLIC
 )
 
 add_executable(sm-1420-mfdd
-    Core/Src/main.c
-    Core/Src/stm32h7xx_hal_msp.c
-    Core/Src/stm32h7xx_hal_timebase_tim.c
-    Core/Src/stm32h7xx_it.c
-    Core/Src/syscalls.c
-    Core/Src/sysmem.c
-    Core/Src/system_stm32h7xx.c
+    cubemx_project/Core/Src/main.c
+    cubemx_project/Core/Src/stm32h7xx_hal_msp.c
+    cubemx_project/Core/Src/stm32h7xx_hal_timebase_tim.c
+    cubemx_project/Core/Src/stm32h7xx_it.c
+    cubemx_project/Core/Src/syscalls.c
+    cubemx_project/Core/Src/sysmem.c
+    cubemx_project/Core/Src/system_stm32h7xx.c
 )
 target_link_libraries(sm-1420-mfdd
 	stm32cubemxh7
