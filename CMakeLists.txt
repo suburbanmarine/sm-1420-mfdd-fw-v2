@@ -48,6 +48,7 @@ INTERFACE
 
 target_include_directories(stm32cubemxh7
 PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     libs/STM32CubeH7/Middlewares/Third_Party/FreeRTOS/Source/include
