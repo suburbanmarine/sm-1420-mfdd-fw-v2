@@ -40,7 +40,7 @@ add_library(stm32cubemxh7
 )
 
 target_compile_definitions(stm32cubemxh7
-INTERFACE 
+PUBLIC 
 	USE_HAL_DRIVER 
 	STM32H753xx 
 	STM32_THREAD_SAFE_STRATEGY=5
@@ -48,7 +48,7 @@ INTERFACE
 
 target_include_directories(stm32cubemxh7
 PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}
+	Core/Inc
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc
     libs/STM32CubeH7/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     libs/STM32CubeH7/Middlewares/Third_Party/FreeRTOS/Source/include
@@ -59,7 +59,13 @@ PUBLIC
 )
 
 add_executable(sm-1420-mfdd
-	main.cpp
+    Core/Src/main.c
+    Core/Src/stm32h7xx_hal_msp.c
+    Core/Src/stm32h7xx_hal_timebase_tim.c
+    Core/Src/stm32h7xx_it.c
+    Core/Src/syscalls.c
+    Core/Src/sysmem.c
+    Core/Src/system_stm32h7xx.c
 )
 target_link_libraries(sm-1420-mfdd
 	stm32cubemxh7
