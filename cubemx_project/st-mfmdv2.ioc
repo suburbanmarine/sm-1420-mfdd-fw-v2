@@ -1,7 +1,6 @@
 #MicroXplorer Configuration settings - do not modify
 ADC1.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_3
-ADC1.ClockPrescaler=ADC_CLOCK_ASYNC_DIV4
-ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SingleDiff-0\#ChannelRegularConversion,SamplingTime-0\#ChannelRegularConversion,OffsetNumber-0\#ChannelRegularConversion,OffsetSignedSaturation-0\#ChannelRegularConversion,NbrOfConversionFlag,ClockPrescaler
+ADC1.IPParameters=Rank-0\#ChannelRegularConversion,master,Channel-0\#ChannelRegularConversion,SingleDiff-0\#ChannelRegularConversion,SamplingTime-0\#ChannelRegularConversion,OffsetNumber-0\#ChannelRegularConversion,OffsetSignedSaturation-0\#ChannelRegularConversion,NbrOfConversionFlag
 ADC1.NbrOfConversionFlag=1
 ADC1.OffsetNumber-0\#ChannelRegularConversion=ADC_OFFSET_NONE
 ADC1.OffsetSignedSaturation-0\#ChannelRegularConversion=DISABLE
@@ -10,7 +9,7 @@ ADC1.SamplingTime-0\#ChannelRegularConversion=ADC_SAMPLETIME_1CYCLE_5
 ADC1.SingleDiff-0\#ChannelRegularConversion=ADC_DIFFERENTIAL_ENDED
 ADC1.master=1
 ADC2.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_4
-ADC2.ClockPrescaler=ADC_CLOCK_ASYNC_DIV4
+ADC2.ClockPrescaler=ADC_CLOCK_ASYNC_DIV1
 ADC2.IPParameters=Rank-0\#ChannelRegularConversion,Channel-0\#ChannelRegularConversion,SingleDiff-0\#ChannelRegularConversion,SamplingTime-0\#ChannelRegularConversion,OffsetNumber-0\#ChannelRegularConversion,OffsetSignedSaturation-0\#ChannelRegularConversion,NbrOfConversionFlag,ClockPrescaler
 ADC2.NbrOfConversionFlag=1
 ADC2.OffsetNumber-0\#ChannelRegularConversion=ADC_OFFSET_NONE
