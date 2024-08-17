@@ -205,6 +205,9 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles TIM8 break interrupt and TIM12 global interrupt.
   */
+static int samples_idx = 0;
+extern uint16_t* samples;
+extern uint16_t numSamp;
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */

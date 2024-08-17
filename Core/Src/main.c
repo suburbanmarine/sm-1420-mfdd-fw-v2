@@ -73,6 +73,11 @@ static void MX_DAC1_Init(void);
 
 /* USER CODE END 0 */
 
+// volatile uint16_t samples[8192];
+volatile uint16_t* samples = (uint16_t*)0x24000000;
+uint16_t numSamp = 9;
+
+
 /**
   * @brief  The application entry point.
   * @retval int
