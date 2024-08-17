@@ -66,6 +66,7 @@ add_executable(sm-1420-mfdd
     cubemx_project/Core/Src/syscalls.c
     cubemx_project/Core/Src/sysmem.c
     cubemx_project/Core/Src/system_stm32h7xx.c
+    cubemx_project/startup_stm32h753xx.s
 )
 target_link_libraries(sm-1420-mfdd
 	stm32cubemxh7
