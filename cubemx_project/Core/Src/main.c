@@ -73,8 +73,11 @@ static void MX_DAC1_Init(void);
 
 /* USER CODE END 0 */
 
-uint16_t numSamp = 9;
-/*alignas(32)*/ __attribute__((section(".user_axi_d1_sram0"))) uint16_t samples[9];
+const uint32_t numSamp = 16;
+/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[16] /*= 
+{
+0x1000, 0x1500, 0x2000, 0x1500
+}*/;
 
 /**
   * @brief  The application entry point.
@@ -117,17 +120,25 @@ int main(void)
   MX_TIM12_Init();
   MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
-  for(int i = 0; i < numSamp; i++)
+  
+  for(uint32_t i = 0; i < numSamp; i++)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
     float sinval = sin(theta);
-    uint16_t sampleval = fabs((sinval * 0x1000/2) + 0x2000);
+    uint32_t sampleval = (int32_t)(sinval * 0x1000/2) + 0x2000;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
     samples[i] = sampleval;
     // samples[i] = 0;
   }
-
+  
+  
+  HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
+  HAL_DAC_Start(&hdac1, DAC_CHANNEL_2);
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0x300);
+  HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
+  HAL_ADC_Start(&hadc2);
+  
   HAL_TIM_PWM_Start_IT(&htim12, TIM_CHANNEL_1);
 
   // TRANSDUCER EN
@@ -346,7 +357,7 @@ static void MX_ADC2_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5;
   sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;

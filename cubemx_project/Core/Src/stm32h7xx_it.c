@@ -57,6 +57,7 @@ extern SPI_HandleTypeDef hspi2;
 
 /* External variables --------------------------------------------------------*/
 extern DAC_HandleTypeDef hdac1;
+extern ADC_HandleTypeDef hadc2;
 extern TIM_HandleTypeDef htim12;
 extern TIM_HandleTypeDef htim6;
 
@@ -206,12 +207,17 @@ void SysTick_Handler(void)
   * @brief This function handles TIM8 break interrupt and TIM12 global interrupt.
   */
 static int samples_idx = 0;
-extern uint16_t* samples;
-extern uint16_t numSamp;
+extern uint32_t samples[16];
+extern uint32_t numSamp;
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */
-
+  {
+    int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc2.Instance);
+    //HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_R, RxValue >> 4U);
+    hdac1.Instance->DHR12R2 = RxValue >> 4U;
+    LL_ADC_REG_StartConversion(hadc2.Instance);
+  }
 
   {
     const SPI_HandleTypeDef *hspi = &hspi2;
@@ -223,9 +229,9 @@ void TIM8_BRK_TIM12_IRQHandler(void)
 
     // foo = 0x2000;
     // foo = 0x3F00;
-    // volatile uint16_t temp = samples[samples_idx] & 0x3FFFU;
-    volatile uint16_t temp = samples[samples_idx] & 0x3FFFU;
-    *ptxdr_16bits = temp;
+    volatile uint32_t temp = samples[samples_idx];
+    //volatile uint32_t temp = 0x2000;
+    *ptxdr_16bits = temp & 0x3FFFU;
     samples_idx++;
 
     if(samples_idx >= numSamp)
