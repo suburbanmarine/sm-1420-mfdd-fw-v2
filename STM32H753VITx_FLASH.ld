@@ -86,6 +86,17 @@ SECTIONS
     . = ALIGN(4);
   } >AXI_D1_FLASH1
 
+  _siitcm = LOADADDR(.itcm);
+
+  .itcm :
+  {
+    . = ALIGN(4);
+    _sitcm = .;
+    *(.text.TIM8_BRK_TIM12_IRQHandler*)
+    . = ALIGN(4);
+    _eitcm = .;
+  } >ITCMRAM AT> AXI_D1_FLASH1
+
   /* The program code and other data goes into FLASH */
   .text :
   {

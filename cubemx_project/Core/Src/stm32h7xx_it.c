@@ -57,6 +57,7 @@ extern SPI_HandleTypeDef hspi2;
 
 /* External variables --------------------------------------------------------*/
 extern DAC_HandleTypeDef hdac1;
+extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 extern TIM_HandleTypeDef htim12;
 extern TIM_HandleTypeDef htim6;
@@ -212,20 +213,15 @@ extern uint32_t numSamp;
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */
-  {
-    int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc2.Instance);
-    //HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_R, RxValue >> 4U);
-    hdac1.Instance->DHR12R2 = RxValue >> 4U;
-    LL_ADC_REG_StartConversion(hadc2.Instance);
-  }
+
 
   {
     const SPI_HandleTypeDef *hspi = &hspi2;
 
     __IO uint16_t *ptxdr_16bits = (__IO uint16_t *)(&(hspi->Instance->TXDR));
-    MODIFY_REG(hspi->Instance->CR2, SPI_CR2_TSIZE, 1);
-    __HAL_SPI_ENABLE(hspi);
-    SET_BIT(hspi->Instance->CR1, SPI_CR1_CSTART);
+    //MODIFY_REG(hspi->Instance->CR2, SPI_CR2_TSIZE, 0);
+    //__HAL_SPI_ENABLE(hspi);
+    //SET_BIT(hspi->Instance->CR1, SPI_CR1_CSTART);
 
     // foo = 0x2000;
     // foo = 0x3F00;
@@ -238,7 +234,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
     {
       samples_idx = 0;
     }
-
+/*
     while ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_EOT) ? SET : RESET) == RESET)
     {
 
@@ -247,10 +243,23 @@ void TIM8_BRK_TIM12_IRQHandler(void)
     __HAL_SPI_CLEAR_EOTFLAG(hspi);
     __HAL_SPI_CLEAR_TXTFFLAG(hspi);
     __HAL_SPI_DISABLE(hspi);
+    */  
+    }
+
+  {
+    //int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc2.Instance);
+    int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc1.Instance);
+    //HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_R, RxValue >> 4U);
+    hdac1.Instance->DHR12R2 = ((RxValue >> 5) + (1 << 10)) & 0xFFF;
+    //hdac1.Instance->DHR12R2 = (samples[samples_idx] >> 2U) & 0xFFF;
+    //LL_ADC_REG_StartConversion(hadc2.Instance);
+    LL_ADC_REG_StartConversion(hadc1.Instance);
   }
 
   /* USER CODE END TIM8_BRK_TIM12_IRQn 0 */
   HAL_TIM_IRQHandler(&htim12);
+  //volatile uint32_t itflag   = htim12.Instance->SR;
+  //__HAL_TIM_CLEAR_FLAG(&htim12, TIM_FLAG_CC1);
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 1 */
 
   /* USER CODE END TIM8_BRK_TIM12_IRQn 1 */

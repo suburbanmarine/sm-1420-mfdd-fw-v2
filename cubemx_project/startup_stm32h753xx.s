@@ -44,6 +44,9 @@ defined in linker script */
 /* end address for the .bss section. defined in linker script */
 .word  _ebss
 /* stack used for SystemInit_ExtMemCtl; always internal RAM used */
+.word  _siitcm
+.word  _sitcm
+.word  _eitcm
 
 /**
  * @brief  This is the code that gets called when the processor first
@@ -79,6 +82,24 @@ LoopCopyDataInit:
   adds r4, r0, r3
   cmp r4, r1
   bcc CopyDataInit
+
+/* Copy from flash to CCMRAM */
+ ldr r0, =_sitcm
+ ldr r1, =_eitcm
+ ldr r2, =_siitcm
+ movs r3, #0
+ b LoopCopyItcmInit
+CopyItcmInit:
+ ldr r4, [r2, r3]
+ str r4, [r0, r3]
+ adds r3, r3, #4
+LoopCopyItcmInit:
+ adds r4, r0, r3
+ cmp r4, r1
+ bcc CopyItcmInit
+/* End of copy to CCMRAM */
+
+
 /* Zero fill the bss segment. */
   ldr r2, =_sbss
   ldr r4, =_ebss

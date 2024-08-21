@@ -86,6 +86,17 @@ SECTIONS
     . = ALIGN(4);
   } >AXI_D1_FLASH1
 
+  _siitcm = LOADADDR(.itcm);
+
+  .itcm :
+  {
+    . = ALIGN(4);
+    _sitcm = .;
+    *stm32h7xx_it.o(.text .text*)
+    . = ALIGN(4);
+    _eitcm = .;
+  } >ITCMRAM AT> AXI_D1_FLASH1
+
   /* The program code and other data goes into FLASH */
   .text :
   {

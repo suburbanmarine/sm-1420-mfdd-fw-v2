@@ -73,8 +73,8 @@ static void MX_DAC1_Init(void);
 
 /* USER CODE END 0 */
 
-const uint32_t numSamp = 16;
-/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[16] /*= 
+const uint32_t numSamp = 256;
+/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[256] /*= 
 {
 0x1000, 0x1500, 0x2000, 0x1500
 }*/;
@@ -125,7 +125,7 @@ int main(void)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
     float sinval = sin(theta);
-    uint32_t sampleval = (int32_t)(sinval * 0x1000/2) + 0x2000;
+    uint32_t sampleval = (int32_t)(sinval * 0x1000/4) + 0x2000;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
     samples[i] = sampleval;
@@ -138,8 +138,15 @@ int main(void)
   HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0x300);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
   HAL_ADC_Start(&hadc2);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
+  HAL_ADC_Start(&hadc1);
   
-  HAL_TIM_PWM_Start_IT(&htim12, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
+  __HAL_TIM_ENABLE_IT(&htim12, TIM_IT_UPDATE);
+
+    MODIFY_REG(hspi2.Instance->CR2, SPI_CR2_TSIZE, 0);
+    __HAL_SPI_ENABLE(&hspi2);
+    SET_BIT(hspi2.Instance->CR1, SPI_CR1_CSTART);
 
   // TRANSDUCER EN
   GPIOD->BSRR = 1U << 10;
@@ -298,7 +305,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5;
   sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
@@ -445,7 +452,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -492,7 +499,7 @@ static void MX_TIM12_Init(void)
   htim12.Instance = TIM12;
   htim12.Init.Prescaler = 0;
   htim12.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim12.Init.Period = 479;
+  htim12.Init.Period = 239;
   htim12.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim12.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim12) != HAL_OK)
@@ -515,7 +522,7 @@ static void MX_TIM12_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 6;
+  sConfigOC.Pulse = 20;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim12, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
