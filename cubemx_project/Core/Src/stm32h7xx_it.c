@@ -57,13 +57,15 @@ extern SPI_HandleTypeDef hspi2;
 
 /* External variables --------------------------------------------------------*/
 extern DAC_HandleTypeDef hdac1;
-extern ADC_HandleTypeDef hadc1;
-extern ADC_HandleTypeDef hadc2;
 extern TIM_HandleTypeDef htim12;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
-
+extern ADC_HandleTypeDef hadc1;
+extern ADC_HandleTypeDef hadc2;
+static int samples_idx = 0;
+extern uint32_t samples[16];
+extern uint32_t numSamp;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -207,9 +209,6 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles TIM8 break interrupt and TIM12 global interrupt.
   */
-static int samples_idx = 0;
-extern uint32_t samples[16];
-extern uint32_t numSamp;
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */
@@ -243,7 +242,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
     __HAL_SPI_CLEAR_EOTFLAG(hspi);
     __HAL_SPI_CLEAR_TXTFFLAG(hspi);
     __HAL_SPI_DISABLE(hspi);
-    */  
+    */
     }
 
   {
@@ -258,10 +257,9 @@ void TIM8_BRK_TIM12_IRQHandler(void)
 
   /* USER CODE END TIM8_BRK_TIM12_IRQn 0 */
   HAL_TIM_IRQHandler(&htim12);
+  /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 1 */
   //volatile uint32_t itflag   = htim12.Instance->SR;
   //__HAL_TIM_CLEAR_FLAG(&htim12, TIM_FLAG_CC1);
-  /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 1 */
-
   /* USER CODE END TIM8_BRK_TIM12_IRQn 1 */
 }
 
