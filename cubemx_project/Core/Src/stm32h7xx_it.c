@@ -269,7 +269,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
-
+    HAL_PWR_DisableSleepOnExit();
   /* USER CODE END TIM6_DAC_IRQn 0 */
   if (hdac1.State != HAL_DAC_STATE_RESET) {
     HAL_DAC_IRQHandler(&hdac1);

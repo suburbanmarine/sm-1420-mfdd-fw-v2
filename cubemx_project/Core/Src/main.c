@@ -70,12 +70,12 @@ static void MX_DAC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-const uint32_t numSamp = 256;
-/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[256] /*=
+const uint32_t numSamp = 32;
+/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[32] /*=
 {
 0x1000, 0x1500, 0x2000, 0x1500
 }*/;
--
+
 /* USER CODE END 0 */
 
 /**
@@ -124,17 +124,16 @@ int main(void)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
     float sinval = sin(theta);
-    uint32_t sampleval = (int32_t)(sinval * 0x1000/4) + 0x2000;
+    uint32_t sampleval = (int32_t)(sinval * 0x800) + 0x2000;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
     samples[i] = sampleval;
     // samples[i] = 0;
   }
 
-
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_2);
-  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0x300);
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0x200);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
   HAL_ADC_Start(&hadc2);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
@@ -150,6 +149,8 @@ int main(void)
   // TRANSDUCER EN
   GPIOD->BSRR = 1U << 10;
 
+  HAL_Delay(2000);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,10 +160,18 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_Delay(500);
-    GPIOE->BSRR = 1U << 13;
-    HAL_Delay(500);
-    GPIOE->BSRR = 1U << (13+16);
+    //HAL_Delay(500);
+    if(HAL_GetTick() % 1000 == 500)
+    {
+        GPIOE->BSRR = 1U << 13;
+    }
+    //HAL_Delay(500);
+    if(HAL_GetTick() % 1000 == 0)
+    {
+        GPIOE->BSRR = 1U << (13+16);
+    }
+    HAL_PWR_EnableSleepOnExit();
+    HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
   }
   /* USER CODE END 3 */
 }
