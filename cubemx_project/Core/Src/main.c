@@ -70,8 +70,8 @@ static void MX_DAC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-const uint32_t numSamp = 32;
-/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[32] /*=
+const uint32_t numSamp = 76;
+/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[76] /*=
 {
 0x1000, 0x1500, 0x2000, 0x1500
 }*/;
@@ -123,8 +123,8 @@ int main(void)
   for(uint32_t i = 0; i < numSamp; i++)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
-    float sinval = sin(theta);
-    uint32_t sampleval = (int32_t)(sinval * 0x800) + 0x2000;
+    float sinval = /*sin(theta) + sin(2.0F * theta) + sin(4.0F * theta) + */sin(8.0F * theta);
+    uint32_t sampleval = (int32_t)(sinval * 0x1000) + 0x2000;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
     samples[i] = sampleval;
@@ -145,6 +145,11 @@ int main(void)
     MODIFY_REG(hspi2.Instance->CR2, SPI_CR2_TSIZE, 0);
     __HAL_SPI_ENABLE(&hspi2);
     SET_BIT(hspi2.Instance->CR1, SPI_CR1_CSTART);
+
+    const SPI_HandleTypeDef *hspi = &hspi2;
+
+    __IO uint16_t *ptxdr_16bits = (__IO uint16_t *)(&(hspi->Instance->TXDR));
+    *ptxdr_16bits = (uint16_t)0x2000U;
 
   // TRANSDUCER EN
   GPIOD->BSRR = 1U << 10;
