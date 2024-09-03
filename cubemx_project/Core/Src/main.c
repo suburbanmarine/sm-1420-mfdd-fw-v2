@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define NUM_SAMPLES 16U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -70,8 +70,8 @@ static void MX_DAC1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-const uint32_t numSamp = 76;
-/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[76] /*=
+const uint32_t numSamp = NUM_SAMPLES;
+/*alignas(32) __attribute__((section(".user_axi_d1_sram0")))*/ uint32_t samples[NUM_SAMPLES] /*=
 {
 0x1000, 0x1500, 0x2000, 0x1500
 }*/;
@@ -123,7 +123,7 @@ int main(void)
   for(uint32_t i = 0; i < numSamp; i++)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
-    float sinval = /*sin(theta) + sin(2.0F * theta) + sin(4.0F * theta) + */sin(8.0F * theta);
+    float sinval = sin(theta);
     uint32_t sampleval = (int32_t)(sinval * 0x1000) + 0x2000;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
@@ -527,9 +527,9 @@ static void MX_TIM12_Init(void)
   htim12.Instance = TIM12;
   htim12.Init.Prescaler = 0;
   htim12.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim12.Init.Period = 479;
+  htim12.Init.Period = 287;
   htim12.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim12.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim12.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim12) != HAL_OK)
   {
     Error_Handler();

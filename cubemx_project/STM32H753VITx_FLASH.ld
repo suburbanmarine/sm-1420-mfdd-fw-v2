@@ -93,6 +93,7 @@ SECTIONS
     . = ALIGN(4);
     _sitcm = .;
     *stm32h7xx_it.o(.text .text*)
+    *(.text.*IRQ*)
     . = ALIGN(4);
     _eitcm = .;
   } >ITCMRAM AT> AXI_D1_FLASH1
@@ -155,7 +156,7 @@ SECTIONS
   _sidata = LOADADDR(.data);
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data : 
+  .data :
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
@@ -166,7 +167,7 @@ SECTIONS
     _edata = .;        /* define a global symbol at data end */
   } >DTCMRAM AT> AXI_D1_FLASH1
 
-  
+
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -194,27 +195,27 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
-  .user_axi_d1_sram0 : 
+  .user_axi_d1_sram0 :
   {
     . = ALIGN(8);
   } >AXI_D1_SRAM0
 
-  .user_ahb_d2_sram1 : 
+  .user_ahb_d2_sram1 :
   {
     . = ALIGN(8);
   } >AHB_D2_SRAM1
 
-  .user_ahb_d2_sram2 : 
+  .user_ahb_d2_sram2 :
   {
     . = ALIGN(8);
   } >AHB_D2_SRAM2
 
-  .user_ahb_d2_sram3 : 
+  .user_ahb_d2_sram3 :
   {
     . = ALIGN(8);
   } >AHB_D2_SRAM3
 
-  .user_axi_flash2 : 
+  .user_axi_flash2 :
   {
     . = ALIGN(8);
   } >AXI_D1_FLASH2

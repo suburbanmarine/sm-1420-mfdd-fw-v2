@@ -32,7 +32,9 @@ extern SPI_HandleTypeDef hspi2;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define NUM_CYCLES 1000U
+#define INITIAL_TIMER_PERIOD 287U
+#define MINIMUM_TIMER_PERIOD 239U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,7 +44,8 @@ extern SPI_HandleTypeDef hspi2;
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+uint32_t CycleCount = 0;
+uint32_t TimerPeriod = INITIAL_TIMER_PERIOD;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -212,8 +215,6 @@ void SysTick_Handler(void)
 void TIM8_BRK_TIM12_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */
-
-
   {
     const SPI_HandleTypeDef *hspi = &hspi2;
 
@@ -232,7 +233,19 @@ void TIM8_BRK_TIM12_IRQHandler(void)
     if(samples_idx >= numSamp)
     {
       samples_idx = 0;
+      CycleCount++;
     }
+    if(CycleCount >= NUM_CYCLES)
+    {
+        CycleCount = 0;
+        TimerPeriod--;
+    }
+    if(TimerPeriod < MINIMUM_TIMER_PERIOD)
+    {
+        TimerPeriod = INITIAL_TIMER_PERIOD;
+    }
+    //Remember that ARR is preloaded for sample synchronization
+    htim12->Instance->ARR = TimerPeriod;
 /*
     while ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_EOT) ? SET : RESET) == RESET)
     {
@@ -249,7 +262,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
     //int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc2.Instance);
     int32_t RxValue = LL_ADC_REG_ReadConversionData32(hadc1.Instance);
     //HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_2, DAC_ALIGN_12B_R, RxValue >> 4U);
-    hdac1.Instance->DHR12R2 = ((RxValue >> 5) + (1 << 10)) & 0xFFF;
+    //hdac1.Instance->DHR12R2 = ((RxValue >> 5) + (1 << 10)) & 0xFFF;
     //hdac1.Instance->DHR12R2 = (samples[samples_idx] >> 2U) & 0xFFF;
     //LL_ADC_REG_StartConversion(hadc2.Instance);
     LL_ADC_REG_StartConversion(hadc1.Instance);
