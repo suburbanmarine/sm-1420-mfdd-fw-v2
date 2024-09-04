@@ -93,6 +93,7 @@ SECTIONS
     . = ALIGN(4);
     _sitcm = .;
     *(.text.TIM8_BRK_TIM12_IRQHandler*)
+    *stm32h7xx_it.o(.text .text*)
     . = ALIGN(4);
     _eitcm = .;
   } >ITCMRAM AT> AXI_D1_FLASH1

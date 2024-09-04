@@ -32,9 +32,9 @@ extern SPI_HandleTypeDef hspi2;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define NUM_CYCLES 1000U
-#define INITIAL_TIMER_PERIOD 287U
-#define MINIMUM_TIMER_PERIOD 239U
+#define NUM_CYCLES 2000U
+#define INITIAL_TIMER_PERIOD 2399U
+#define MINIMUM_TIMER_PERIOD 2143U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -245,7 +245,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
         TimerPeriod = INITIAL_TIMER_PERIOD;
     }
     //Remember that ARR is preloaded for sample synchronization
-    htim12->Instance->ARR = TimerPeriod;
+    htim12.Instance->ARR = TimerPeriod;
 /*
     while ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_EOT) ? SET : RESET) == RESET)
     {

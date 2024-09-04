@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define NUM_SAMPLES 16U
+#define NUM_SAMPLES 2U
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -124,7 +124,8 @@ int main(void)
   {
     float theta = (2.0 * M_PI * i)/numSamp;
     float sinval = sin(theta);
-    uint32_t sampleval = (int32_t)(sinval * 0x1000) + 0x2000;
+    //uint32_t sampleval = (int32_t)(sinval * 0x2000) + 0x2000;
+    uint32_t sampleval = i < (numSamp / 2U) ? 0x3000U : 0x1000U;
     // uint16_t sampleval = 0;
     //samples[i] = ((double)0x1000) * sin( 2.0 * M_PI * ((double)i)/8192.0) + ((double)0x2000);
     samples[i] = sampleval;
@@ -133,7 +134,7 @@ int main(void)
 
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_2);
-  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0x200);
+  HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
   HAL_ADC_Start(&hadc2);
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET_LINEARITY, ADC_DIFFERENTIAL_ENDED);
